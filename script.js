@@ -1,66 +1,26 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Function to update the total price and total quantity
-    function updateTotal() {
-        let total = 0;
-        let totalQuantity = 0;
-        const products = document.querySelectorAll('.card-body');
-        products.forEach(product => {
-            const unitPrice = parseFloat(product.querySelector('.unit-price').textContent.replace(' $', ''));
-            const quantity = parseInt(product.querySelector('.quantity').textContent);
-            total += unitPrice * quantity;
-            totalQuantity += quantity;
-        });
-        document.querySelector('.total').textContent = `${total.toFixed()} $`;
-        document.querySelector('.total-quantity').textContent = totalQuantity;
-    }
+function nextQuestion(url) {
+  window.location.href = url;
+}
 
-    // Function to increment quantity
-    function incrementQuantity(event) {
-        const quantityElement = event.target.parentElement.querySelector('.quantity');
-        let currentQuantity = parseInt(quantityElement.textContent);
-        quantityElement.textContent = currentQuantity + 1;
-        updateTotal();
-    }
+function submitQuiz() {
+  let score = 0;
 
-    // Function to decrement quantity
-    function decrementQuantity(event) {
-        const quantityElement = event.target.parentElement.querySelector('.quantity');
-        let currentQuantity = parseInt(quantityElement.textContent);
-        if (currentQuantity > 0) {
-            quantityElement.textContent = currentQuantity - 1;
-            updateTotal();
-        }
-    }
+  // Get all answers
+  const q1 = document.querySelector('input[name="q1"]:checked');
+  const q2 = document.querySelector('input[name="q2"]:checked');
+  const q3 = document.querySelector('input[name="q3"]:checked');
 
-    // Function to delete an item
-    function deleteItem(event) {
-        const productCard = event.target.closest('.card-body');
-        productCard.remove();
-        updateTotal();
-    }
+  // Check if the answers are correct
+  if (q1 && q1.value === 'option 3') score++;
+  if (q2 && q2.value === 'option 1') score++;
+  if (q3 && q3.value === 'option 2') score++;
 
-    // Function to toggle like
-    function toggleLike(event) {
-        event.target.classList.toggle('liked');
-    }
+  // Show the result
+  const resultElement = document.getElementById('result');
+  if (resultElement) {
+      resultElement.innerHTML = `You scored ${score} out of 3!`;
+  } else {
+      alert(`You scored ${score} out of 3!`);
+  }
+}
 
-    // Attach event listeners to all relevant buttons
-    document.querySelectorAll('.fa-plus-circle').forEach(button => {
-        button.addEventListener('click', incrementQuantity);
-    });
-
-    document.querySelectorAll('.fa-minus-circle').forEach(button => {
-        button.addEventListener('click', decrementQuantity);
-    });
-
-    document.querySelectorAll('.fa-trash-alt').forEach(button => {
-        button.addEventListener('click', deleteItem);
-    });
-
-    document.querySelectorAll('.fa-heart').forEach(button => {
-        button.addEventListener('click', toggleLike);
-    });
-
-    // Initialize total values
-    updateTotal();
-});
